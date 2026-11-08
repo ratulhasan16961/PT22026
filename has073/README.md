@@ -66,6 +66,20 @@ a paid Hugging Face plan, so the Gradio app is run locally with `python app.py`.
 - app.py: Gradio web interface
 - requirements.txt: dependencies
 
+## Models
+- **Logistic Regression** (baseline): a linear model. It standardises the 14
+  features and outputs a phishing probability with a sigmoid of a weighted sum.
+- **Random Forest** (used in the app): an ensemble of 100 decision trees. Each
+  tree is trained on a bootstrap sample of the training URLs and considers a
+  random subset of features at every split (minimum 5 samples per leaf). The
+  predicted probability is the average of all trees, which reduces the
+  variance of a single tree and captures non-linear feature interactions.
+- **Gradient Boosting** (`HistGradientBoostingClassifier`): trees are added one
+  after another, and each new tree corrects the errors of the previous ones
+  (300 iterations, learning rate 0.1, histogram-based splits).
+- **Explanations**: the app uses SHAP (`TreeExplainer`) to show which features
+  pushed a prediction towards phishing or safe.
+
 ## Results (20% stratified test set, 101,439 URLs)
 
 | Model | Accuracy | Phishing precision | Phishing recall | Phishing F1 | ROC-AUC |
