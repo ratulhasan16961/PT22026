@@ -43,6 +43,34 @@ training. The model was trained with scikit-learn 1.9.1, numpy 2.5.4 and
 pandas 3.1.0; use similar versions if you load it. A live Gradio Space needs
 a paid Hugging Face plan, so the Gradio app is run locally with `python app.py`.
 
+## Quick start (no training needed)
+    cd has073
+    python3 -m venv .venv
+    source .venv/bin/activate
+    pip install -r requirements.txt
+    python app.py
+
+The first start downloads the trained model (about 176 MB) from the Hugging
+Face Hub. The dependency versions in `requirements.txt` are the ones the model
+was trained and tested with.
+
+## Tests
+    pip install -r requirements-dev.txt
+    python -m pytest
+
+The unit tests cover the URL normalisation, every feature and a few odd inputs.
+
+## Docker (optional)
+    docker build -t phishing-url-detector .
+    docker run --rm -p 7860:7860 phishing-url-detector
+
+## Figures
+![Model comparison](figures/model_comparison.png)
+![Random Forest confusion matrix](figures/confusion_matrix_rf.png)
+![ROC curves](figures/roc_curves.png)
+![SHAP summary](figures/shap_summary.png)
+
+
 ## Setup
     python3 -m venv .venv
     source .venv/bin/activate
@@ -50,11 +78,11 @@ a paid Hugging Face plan, so the Gradio app is run locally with `python app.py`.
     mkdir -p data models
 
 ## Usage
-    python train.py          # train and compare the models
-    python evaluate.py       # comparison chart, confusion matrix, ROC curves
-    python shap_plot.py      # SHAP summary plot
-    python manual_test.py    # 9 hand-made sanity checks
-    python app.py            # run the Gradio app, then open the local link
+    python train.py          
+    python evaluate.py       
+    python shap_plot.py     
+    python manual_test.py    
+    python app.py           
 
 ## Project structure
 - features.py: URL normalisation and feature extraction
@@ -65,6 +93,10 @@ a paid Hugging Face plan, so the Gradio app is run locally with `python app.py`.
 - manual_test.py: manual sanity tests on safe and phishing URLs
 - app.py: Gradio web interface
 - requirements.txt: dependencies
+- tests/: unit tests (pytest)
+- requirements-dev.txt: test dependencies
+- Dockerfile: container build for the app
+- LICENSE: MIT license
 
 ## Models
 - **Logistic Regression** (baseline): a linear model. It standardises the 14

@@ -6,8 +6,11 @@ import joblib
 import numpy as np
 import pandas as pd
 import shap
+import logging
 
 from features import FEATURE_NAMES, extract_features, normalize_url
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 LOCAL_MODEL_PATHS = ("models/best_model.joblib", "best_model.joblib")
 HF_MODEL_REPO = "Ratul16961/phishing-url-random-forest"
@@ -43,7 +46,8 @@ def load_model():
 
         downloaded = hf_hub_download(repo_id=HF_MODEL_REPO, filename=HF_MODEL_FILE)
         return joblib.load(downloaded)
-    except Exception:
+    except Exception as exc:
+        logger.warning("Could not load the model from the Hugging Face Hub: %s", exc)
         return None
 
 
@@ -51,7 +55,8 @@ model = load_model()
 
 try:
     explainer = shap.TreeExplainer(model) if model is not None else None
-except Exception:
+except Exception as exc:
+    logger.warning("SHAP explainer is not available: %s", exc)
     explainer = None
 
 
